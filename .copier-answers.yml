@@ -8,7 +8,8 @@ SelectCodeQualityFeatures:
 SelectCommunityFeatures:
 - AddCodeConduct_flag
 - AddContributing_flag
-SelectDocumentationFeatures: []
+SelectDocumentationFeatures:
+- AddDevDoc_flag
 SelectGitHubActions:
 - AddGitHubActionBuild_flag
 SelectPublishReleaseFeatures:
