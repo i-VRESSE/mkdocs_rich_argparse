@@ -104,6 +104,8 @@ pydocstyle.convention = "google"
     "ANN201", # Missing return type annotation for public function
     "PT011",  # Missing `match` parameter in `pytest.raises()`
     "S101",   # Use of assert is detected
+    "D103",   # Missing docstring in public function
+    "PLR2004", # tests are magic
 ]
 
 [tool.ruff.lint.isort]
