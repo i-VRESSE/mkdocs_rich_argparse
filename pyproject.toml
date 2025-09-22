@@ -93,6 +93,7 @@ ignore = [
     "D105", # Missing docstring in magic method
     "D107", # Missing docstring in `__init__`
     "COM812", # Conflicts with formatter
+    "SLF001", # Needed to get to argparse content
 ]
 pydocstyle.convention = "google"
 

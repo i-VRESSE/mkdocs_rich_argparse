@@ -3,11 +3,12 @@
 import argparse
 import importlib
 import io
+from collections.abc import Callable
 from textwrap import dedent
-from typing import Any
 import mkdocs.config.base
 import mkdocs.config.config_options
 import mkdocs.plugins
+from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.exceptions import PluginError
 from mkdocs.structure.files import File
 from mkdocs.structure.files import Files
@@ -20,7 +21,7 @@ __version__ = "0.1.0"
 logger = mkdocs.plugins.get_plugin_logger(__name__)
 
 
-def capture_help(parser: argparse.ArgumentParser) -> str:
+def _capture_help(parser: argparse.ArgumentParser) -> str:
     """Capture the help text of an argparse parser as HTML."""
     # Based on https://github.com/hamdanal/rich-argparse/blob/e28584ac56ddd46f4079d037c27f24f0ec4eccb4/rich_argparse/_argparse.py#L545
     # but with export instead of save
@@ -43,10 +44,10 @@ def capture_help(parser: argparse.ArgumentParser) -> str:
 
 
 # TODO allow to configure heading
-def argparser_to_markdown(parser: argparse.ArgumentParser, heading="CLI Reference") -> str:
+def _argparser_to_markdown(parser: argparse.ArgumentParser, heading: str = "CLI Reference") -> str:
     prog = parser.prog
 
-    main_help = capture_help(parser)
+    main_help = _capture_help(parser)
 
     lines = [
         f"# {heading}",
@@ -61,7 +62,7 @@ def argparser_to_markdown(parser: argparse.ArgumentParser, heading="CLI Referenc
     current_subparsers_action = subparsers_actions[0]
 
     for sub_cmd_name, sub_cmd_parser in current_subparsers_action.choices.items():
-        sub_cmd_help_text = capture_help(sub_cmd_parser)
+        sub_cmd_help_text = _capture_help(sub_cmd_parser)
 
         lines.extend(
             [
@@ -80,7 +81,7 @@ def argparser_to_markdown(parser: argparse.ArgumentParser, heading="CLI Referenc
         if sub_subparsers_actions:
             sub_current_subparsers_action = sub_subparsers_actions[0]
             for sub_sub_cmd_name, sub_sub_cmd_parser in sub_current_subparsers_action.choices.items():
-                sub_sub_cmd_help_text = capture_help(sub_sub_cmd_parser)
+                sub_sub_cmd_help_text = _capture_help(sub_sub_cmd_parser)
 
                 lines.extend(
                     [
@@ -95,46 +96,56 @@ def argparser_to_markdown(parser: argparse.ArgumentParser, heading="CLI Referenc
     return "\n".join(lines)
 
 
-class MkDocRichArgparseException(PluginError):
+class MkDocRichArgparseError(PluginError):
     """Base exception for mkdocs_rich_argparse."""
 
 
-def load_parser(module: str, attribute: str) -> argparse.ArgumentParser:
-    """Load and return the argparse parser located at '<module>:<attribute>'.
-    """
+def _load_parser(module: str, attribute: str) -> argparse.ArgumentParser:
+    """Load and return the argparse parser located at '<module>:<attribute>'."""
     factory = _load_obj(module, attribute)
+
+    if not callable(factory):
+        msg = f"{attribute!r} must be a callable that returns an 'argparse.ArgumentParser' object"
+        raise MkDocRichArgparseError(msg)
+
     parser = factory()
 
     if not isinstance(parser, argparse.ArgumentParser):
-        raise MkDocRichArgparseException(
-            f"{attribute!r} must be a 'argparse.ArgumentParser' object, got {type(parser)}"
-        )
+        msg = f"{attribute!r} must be a 'argparse.ArgumentParser' object, got {type(parser)}"
+        raise MkDocRichArgparseError(msg)
 
     return parser
 
 
-def _load_obj(module: str, attribute: str) -> Any:
+def _load_obj(module: str, attribute: str) -> Callable:
     try:
         mod = importlib.import_module(module)
     except SystemExit:
-        raise MkDocRichArgparseException("the module appeared to call sys.exit()")  # pragma: no cover
+        msg = "the module appeared to call sys.exit()"
+        raise MkDocRichArgparseError(msg) from None
 
     try:
         return getattr(mod, attribute)
-    except AttributeError:
-        raise MkDocRichArgparseException(f"Module {module!r} has no attribute {attribute!r}")
+    except AttributeError as exc:
+        msg = f"Module {module!r} has no attribute {attribute!r}"
+        raise MkDocRichArgparseError(msg) from exc
 
 
 class RichArgparsePluginConfig(mkdocs.config.base.Config):
+    """Configuration for the RichArgparsePlugin."""
+
     module = mkdocs.config.config_options.Type(str)
     factory = mkdocs.config.config_options.Type(str)
 
 
 class RichArgparsePlugin(mkdocs.plugins.BasePlugin[RichArgparsePluginConfig]):
-    def on_files(self, files: Files, config):
+    """MkDocs plugin to generate documentation for a rich argparse parser."""
+
+    def on_files(self, files: Files, config: MkDocsConfig) -> Files:
+        """Add a generated cli.md file to the documentation."""
         logger.info("Generating CLI documentation...")
-        parser = load_parser(self.config.module, self.config.factory)
-        docs_content = argparser_to_markdown(parser)
+        parser = _load_parser(self.config.module, self.config.factory)
+        docs_content = _argparser_to_markdown(parser)
         # TODO instead of adding file replace cli.md with generated content
         # like https://github.com/mkdocs/mkdocs-click/blob/master/mkdocs_click/_extension.py
         cli_md_file = File.generated(
