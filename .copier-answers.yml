@@ -1,0 +1,29 @@
+# Changes here will be overwritten by Copier
+SelectCitation:
+- AddCitationFile_flag
+SelectCodeQualityFeatures:
+- AddLocalTests_flag
+- SelectGitHubActions_flag
+- AddLinting_flag
+SelectCommunityFeatures:
+- AddCodeConduct_flag
+- AddContributing_flag
+SelectDocumentationFeatures: []
+SelectGitHubActions:
+- AddGitHubActionBuild_flag
+SelectPublishReleaseFeatures:
+- SelectCitation_flag
+_commit: 0.6.1
+_src_path: https://github.com/nlesc/python-template.git
+code_of_conduct_email: s.verhoeven@esciencecenter.nl
+copyright_holder: Stefan Verhoeven
+email: s.verhoeven@esciencecenter.nl
+full_name: Stefan Verhoeven
+github_organization: i-VRESSE
+keywords: argparse,mkdocs,mkdocs-plugin,rich
+license: Apachev2
+package_name: mkdocs_rich_argparse
+package_short_description: An MkDocs plugin to generate documentation for a rich argparse
+    parser
+template_profile: ask
+version: 0.1.0
