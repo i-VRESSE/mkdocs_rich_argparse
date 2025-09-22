@@ -51,17 +51,5 @@ To create a release you need write permission on the repository.
 4. Press draft a new release button
 5. Fill version, title and description field
 6. Press the Publish Release button
-<!--
-For projects that automatically publish to PyPI using a release or publish workflow, something like the following could be useful to add (make sure to replace the names and links):
-
-1. Wait until [PyPi publish workflow](https://github.com/i-VRESSE/mkdocs_rich_argparse/actions/workflows/publish.yml) has completed
-2. Verify new release is on [PyPi](https://pypi.org/project/matchms/#history)
--->
-<!--
-For projects that also build conda packages, e.g. on conda-forge or Bioconda, something like the following could be useful to add (example taken from matchms, make sure to replace the names and links):
-
-1. Wait until new release is also on Bioconda (https://anaconda.org/bioconda/mkdocs_rich_argparse) via a automaticly created PR on [bioconda recipes repo](https://github.com/bioconda/bioconda-recipes/pulls?q=is%3Apr+is%3Aopen+mkdocs_rich_argparse)
-2. Test mkdocs_rich_argparse from bioconda by manually running [Conda verify](https://github.com/i-VRESSE/mkdocs_rich_argparse/actions/workflows/conda_verify.yml) workflow
--->
-
-
+7. Wait until [PyPi publish workflow](https://github.com/i-VRESSE/mkdocs_rich_argparse/actions/workflows/pypi-publish.yml) has completed
+8. Verify new release is on [PyPi](https://pypi.org/project/mkdocs_rich_argparse/#history)
