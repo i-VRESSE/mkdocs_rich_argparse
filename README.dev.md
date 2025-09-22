@@ -73,35 +73,7 @@ ruff check .
 ruff check . --fix
 ```
 
-To fix readability of your code style you can use [yapf](https://github.com/google/yapf).## Generating the API docs
-
-```shell
-cd docs
-make html
-```
-
-The documentation will be in `docs/_build/html`
-
-If you do not have `make` use
-
-```shell
-sphinx-build -b html docs docs/_build/html
-```
-
-To find undocumented Python objects run
-
-```shell
-cd docs
-make coverage
-cat _build/coverage/python.txt
-```
-
-To [test snippets](https://www.sphinx-doc.org/en/master/usage/extensions/doctest.html) in documentation run
-
-```shell
-cd docs
-make doctest
-```
+To fix readability of your code style you can use [yapf](https://github.com/google/yapf).
 
 ### (3/3) GitHub
 

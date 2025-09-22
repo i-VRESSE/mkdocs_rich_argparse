@@ -27,10 +27,6 @@ cd mkdocs_rich_argparse
 python -m pip install .
 ```
 
-## Documentation
-
-Include a link to your project's full documentation here.
-
 ## Contributing
 
 If you want to contribute to the development of mkdocs_rich_argparse,
