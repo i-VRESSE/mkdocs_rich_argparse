@@ -38,7 +38,6 @@ dev = [
     "pytest",
     "pytest-cov",
     "ruff",
-    "tox",
     "myst_parser",
 ]
 publishing = [
@@ -62,16 +61,6 @@ testpaths = ["tests"]
 branch = true
 source = ["src/mkdocs_rich_argparse"]
 command_line = "-m pytest"
-
-[tool.tox]
-legacy_tox_ini = """
-[tox]
-envlist = py38,py39,py310,py311,py312
-skip_missing_interpreters = true
-[testenv]
-commands = pytest
-extras = dev
-"""
 
 [tool.ruff]
 line-length = 120

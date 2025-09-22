@@ -27,22 +27,11 @@ Afterwards check that the install directory is present in the `PATH` environment
 
 ## Running the tests
 
-There are two ways to run tests.
-
-The first way requires an activated virtual environment with the development tools installed:
+In an activated virtual environment with the development tools installed:
 
 ```shell
 pytest -v
 ```
-
-The second is to use `tox`, which can be installed separately (e.g. with `pip install tox`), i.e. not necessarily inside the virtual environment you use for installing `mkdocs_rich_argparse`, but then builds the necessary virtual environments itself by simply running:
-
-```shell
-tox
-```
-
-Testing with `tox` allows for keeping the testing environment separate from your development environment.
-The development environment will typically accumulate (old) packages during development that interfere with testing; this problem is avoided by testing with `tox`.
 
 ### Test coverage
 
