@@ -31,7 +31,3 @@ python -m pip install .
 
 If you want to contribute to the development of mkdocs_rich_argparse,
 have a look at the [contribution guidelines](CONTRIBUTING.md).
-
-## Credits
-
-This package was created with [Copier](https://github.com/copier-org/copier) and the [NLeSC/python-template](https://github.com/NLeSC/python-template).
