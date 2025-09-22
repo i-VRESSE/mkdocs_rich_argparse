@@ -15,17 +15,34 @@
 | Build                              | [![build](https://github.com/i-VRESSE/mkdocs_rich_argparse/actions/workflows/build.yml/badge.svg)](https://github.com/i-VRESSE/mkdocs_rich_argparse/actions/workflows/build.yml) |
 | Citation data consistency          | [![cffconvert](https://github.com/i-VRESSE/mkdocs_rich_argparse/actions/workflows/cffconvert.yml/badge.svg)](https://github.com/i-VRESSE/mkdocs_rich_argparse/actions/workflows/cffconvert.yml) |## How to use mkdocs_rich_argparse
 
-An MkDocs plugin to generate documentation for a rich argparse parser
+An MkDocs plugin to generate documentation for a rich argparse parser.
+It renders commands, sub commands and sub-sub commands which can have rich help messages.
 
 ## Installation
 
-To install mkdocs_rich_argparse from GitHub repository, do:
+Install from Pypi:
 
-```console
-git clone git@github.com:i-VRESSE/mkdocs_rich_argparse.git
-cd mkdocs_rich_argparse
-python -m pip install .
+```bash
+pip install mkdocs_rich_argparse
 ```
+
+## Usage
+
+In your `mkdocs.yml` configuration file, add the plugin and configure it with the module and command to document:
+
+```yaml
+plugins:
+    - mkdocs_rich_argparse:
+        module: my_module
+        factory: my_factory_function
+
+nav:
+   - CLI Reference: cli.md
+```
+
+Where `my_module` is the Python module containing your argparse parser factory function, and `my_factory_function` is the specific function that returns an argparse parser object. It should be callable without arguments.
+
+When serving or building your MkDocs site, the plugin will generate a `cli.md` file containing the documentation for the specified argparse parser.
 
 ## Contributing
 
