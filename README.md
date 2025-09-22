@@ -17,8 +17,6 @@
 
 An MkDocs plugin to generate documentation for a rich argparse parser
 
-The project setup is documented in [project_setup.md](project_setup.md). Feel free to remove this document (and/or the link to this document) if you don't need it.
-
 ## Installation
 
 To install mkdocs_rich_argparse from GitHub repository, do:
