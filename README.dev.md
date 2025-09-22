@@ -105,13 +105,7 @@ make doctest
 
 ## Versioning
 
-Bumping the version across all files is done with [bump-my-version](https://github.com/callowayproject/bump-my-version), e.g.
-
-```shell
-bump-my-version bump major  # bumps from e.g. 0.3.2 to 1.0.0
-bump-my-version bump minor  # bumps from e.g. 0.3.2 to 0.4.0
-bump-my-version bump patch  # bumps from e.g. 0.3.2 to 0.3.3
-```
+Bumping the version is done in `src/mkdocs_rich_argparse/__init__.py`, all other files read version from there.
 
 ## Making a release
 
