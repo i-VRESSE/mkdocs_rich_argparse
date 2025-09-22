@@ -36,6 +36,7 @@ readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.8"
 dynamic = ["version"]
 
+# TODO convert to dependency groups
 [project.optional-dependencies]
 dev = [
     "build",  # build is not only used in publishing (below), but also in the template's test suite

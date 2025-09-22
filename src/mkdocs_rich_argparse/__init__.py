@@ -26,6 +26,7 @@ def _capture_help(parser: argparse.ArgumentParser) -> str:
     # Based on https://github.com/hamdanal/rich-argparse/blob/e28584ac56ddd46f4079d037c27f24f0ec4eccb4/rich_argparse/_argparse.py#L545
     # but with export instead of save
 
+    # TODO allow to configure colors
     # Overwrite default colors as on mkdocs black text is not visible in dark mode
     ArgumentDefaultsRichHelpFormatter.styles["argparse.help"] = "green"
     ArgumentDefaultsRichHelpFormatter.styles["argparse.text"] = "green"
@@ -44,7 +45,8 @@ def _capture_help(parser: argparse.ArgumentParser) -> str:
 
 
 # TODO allow to configure heading
-def _argparser_to_markdown(parser: argparse.ArgumentParser, heading: str = "CLI Reference") -> str:
+def argparser_to_markdown(parser: argparse.ArgumentParser, heading: str = "CLI Reference") -> str:
+    """Convert an argparse parser to markdown documentation."""
     prog = parser.prog
 
     main_help = _capture_help(parser)
@@ -145,7 +147,7 @@ class RichArgparsePlugin(mkdocs.plugins.BasePlugin[RichArgparsePluginConfig]):
         """Add a generated cli.md file to the documentation."""
         logger.info("Generating CLI documentation...")
         parser = _load_parser(self.config.module, self.config.factory)
-        docs_content = _argparser_to_markdown(parser)
+        docs_content = argparser_to_markdown(parser)
         # TODO instead of adding file replace cli.md with generated content
         # like https://github.com/mkdocs/mkdocs-click/blob/master/mkdocs_click/_extension.py
         cli_md_file = File.generated(
