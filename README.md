@@ -22,7 +22,7 @@ pip install mkdocs_rich_argparse
 
 ## Usage
 
-In your `mkdocs.yml` configuration file, add the plugin and configure it with the module and command to document:
+In your `mkdocs.yml` configuration file, add the plugin and configure it with the module and factory to document:
 
 ```yaml
 plugins:
