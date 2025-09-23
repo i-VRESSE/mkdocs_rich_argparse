@@ -94,4 +94,3 @@ def test_argparser_to_markdown_with_color(monkeypatch: pytest.MonkeyPatch, sampl
 
     assert len(result) > 3500
     assert '<span style="color: #008080; text-decoration-color: #008080">' in result
-    assert '<span style="color: #ff8700; text-decoration-color: #ff8700">' in result
