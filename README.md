@@ -40,6 +40,8 @@ When serving or building your MkDocs site, the plugin will generate a `cli.md` f
 
 See the [example/](example/) directory for a minimal example and a custom styled example.
 
+[![Screenshot of example](https://github.com/i-VRESSE/mkdocs_rich_argparse/raw/main/example/screenshot.png)](https://github.com/i-VRESSE/mkdocs_rich_argparse/raw/main/example/screenshot.png)
+
 ## Contributing
 
 If you want to contribute to the development of mkdocs_rich_argparse,
