@@ -89,10 +89,17 @@ def test_argparser_to_markdown_with_no_color(sample_parser: argparse.ArgumentPar
 
 def test_argparser_to_markdown_with_color(monkeypatch: pytest.MonkeyPatch, sample_parser: argparse.ArgumentParser):
     monkeypatch.setenv("FORCE_COLOR", "1")
-    RichArgparseStyles().apply()  # pyright: ignore[reportAttributeAccessIssue]
+    styles = RichArgparseStyles()
+    # Use custom color
+    styles["args"] = "gold1"  # #ffd700 at https://rich.readthedocs.io/en/stable/appendix/colors.html
+    styles.apply()  # pyright: ignore[reportAttributeAccessIssue]
 
     result = argparser_to_markdown(sample_parser, heading="My Program CLI")
 
     assert len(result) > 3500
-    assert '<span style="color: #ff8700; text-decoration-color: #ff8700">' in result  # red color for usage
-    assert '<span style="color: #008000; text-decoration-color: #008000">' in result  # green color for descriptions
+    # gold color for args, default of RichHelpFormatter
+    assert '<span style="color: #ffd700; text-decoration-color: #ffd700">' in result
+    # green color for descriptions, default of RichArgparseStyles
+    assert '<span style="color: #008000; text-decoration-color: #008000">' in result
+    # dark orange for groups
+    assert '<span style="color: #ff8700; text-decoration-color: #ff8700">' in result

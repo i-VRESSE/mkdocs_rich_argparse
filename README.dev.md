@@ -51,18 +51,15 @@ coverage report
 
 `coverage` can also generate output in HTML and other formats; see `coverage help` for more information.## Running linters locally
 
-For linting and sorting imports we will use [ruff](https://beta.ruff.rs/docs/). Running the linters requires an
-activated virtual environment with the development tools installed.
+For linting and sorting imports we will use [ruff](https://docs.astral.sh/ruff/). Running the linters requires [uv](https://docs.astral.sh/uv) installed.
 
 ```shell
 # linter
-ruff check .
+uvx ruff check .
 
 # linter with automatic fixing
-ruff check . --fix
+uvx ruff check . --fix
 ```
-
-To fix readability of your code style you can use [yapf](https://github.com/google/yapf).
 
 ### (3/3) GitHub
 

@@ -31,7 +31,6 @@ dependencies = [
 description = "An MkDocs plugin to generate documentation for a rich argparse parser"
 keywords = ["argparse","mkdocs","mkdocs-plugin","rich"]
 license = {file = "LICENSE"}
-# TODO replace _ with - in package name on pypi and GH
 name = "mkdocs_rich_argparse"
 readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.10"
@@ -42,7 +41,6 @@ dev = [
     "coverage[toml]",
     "pytest",
     "pytest-cov",
-    "ruff",
 ]
 
 [project.urls]
