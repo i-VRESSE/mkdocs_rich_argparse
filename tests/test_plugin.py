@@ -2,6 +2,7 @@ import argparse
 from textwrap import dedent
 import pytest
 from rich_argparse import RichHelpFormatter
+from mkdocs_rich_argparse import RichArgparseStyles
 from mkdocs_rich_argparse import argparser_to_markdown
 
 
@@ -31,7 +32,7 @@ def test_argparser_to_markdown_with_no_color(sample_parser: argparse.ArgumentPar
         myprogram --help
         ```
         <pre style="font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">
-        <code style="font-family:inherit">
+        <code style="font-family:inherit" class="nohighlight">
         Usage: myprogram [-h] [--verbose] {remote} ...
 
         This is my program.
@@ -52,7 +53,7 @@ def test_argparser_to_markdown_with_no_color(sample_parser: argparse.ArgumentPar
         myprogram remote --help
         ```
         <pre style="font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">
-        <code style="font-family:inherit">
+        <code style="font-family:inherit" class="nohighlight">
         Usage: myprogram remote [-h] {remove} ...
 
         Options:
@@ -70,7 +71,7 @@ def test_argparser_to_markdown_with_no_color(sample_parser: argparse.ArgumentPar
         myprogram remote remove --help
         ```
         <pre style="font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">
-        <code style="font-family:inherit">
+        <code style="font-family:inherit" class="nohighlight">
         Usage: myprogram remote remove [-h] name
 
         Positional Arguments:
@@ -88,6 +89,7 @@ def test_argparser_to_markdown_with_no_color(sample_parser: argparse.ArgumentPar
 
 def test_argparser_to_markdown_with_color(monkeypatch: pytest.MonkeyPatch, sample_parser: argparse.ArgumentParser):
     monkeypatch.setenv("FORCE_COLOR", "1")
+    RichArgparseStyles().apply()  # pyright: ignore[reportAttributeAccessIssue]
 
     result = argparser_to_markdown(sample_parser, heading="My Program CLI")
 

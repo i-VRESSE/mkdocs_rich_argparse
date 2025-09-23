@@ -21,6 +21,7 @@ __version__ = "0.1.0"
 
 logger = mkdocs.plugins.get_plugin_logger(__name__)
 
+
 def _capture_help(parser: argparse.ArgumentParser) -> str:
     """Capture the help text of an argparse parser as HTML."""
     # Based on https://github.com/hamdanal/rich-argparse/blob/e28584ac56ddd46f4079d037c27f24f0ec4eccb4/rich_argparse/_argparse.py#L545
@@ -128,9 +129,11 @@ def _load_obj(module: str, attribute: str, path: str | None) -> Callable:
         msg = f"Module {module!r} has no attribute {attribute!r}"
         raise MkDocRichArgparseError(msg) from exc
 
+
 class RichArgparseStyles(mkdocs.config.base.Config):
     """Configuration for styles applied to the generated documentation."""
-    args =  mkdocs.config.config_options.Optional(mkdocs.config.config_options.Type(str))
+
+    args = mkdocs.config.config_options.Optional(mkdocs.config.config_options.Type(str))
     groups = mkdocs.config.config_options.Optional(mkdocs.config.config_options.Type(str))
     # Overwrite default colors as on mkdocs black text is not visible in dark mode
     help = mkdocs.config.config_options.Type(str, default="green")
@@ -144,6 +147,7 @@ class RichArgparseStyles(mkdocs.config.base.Config):
         for key, value in self.items():
             if value is not None:
                 RichHelpFormatter.styles[f"argparse.{key}"] = value
+
 
 class RichArgparsePluginConfig(mkdocs.config.base.Config):
     """Configuration for the RichArgparsePlugin."""
