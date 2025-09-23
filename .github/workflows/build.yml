@@ -7,7 +7,6 @@ on:
   pull_request:
 
 jobs:
-
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -15,10 +14,17 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install uv
         uses: astral-sh/setup-uv@v6
-      - name: Run unit tests
-        run: uv run pytest -v
       - name: Verify that we can build the package
         run: uv build
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+      - name: Run unit tests
+        run: uv run pytest -v
   lint:
     name: Linting build
     runs-on: ubuntu-latest

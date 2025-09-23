@@ -37,20 +37,12 @@ readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.10"
 dynamic = ["version"]
 
-# TODO convert to dependency groups
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
-    "build",  # build is not only used in publishing (below), but also in the template's test suite
-    "coverage [toml]",
+    "coverage[toml]",
     "pytest",
     "pytest-cov",
     "ruff",
-    "myst_parser",
-]
-publishing = [
-    "build",
-    "twine",
-    "wheel",
 ]
 
 [project.urls]
@@ -65,7 +57,6 @@ version = {attr = "mkdocs_rich_argparse.__version__"}
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-
 
 [tool.coverage.run]
 branch = true
