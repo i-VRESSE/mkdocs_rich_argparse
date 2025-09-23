@@ -1,4 +1,4 @@
-## Badges
+## Mkdocs rich argparse
 
 <!-- TODO add to RSD and Pypi-->
 <!-- TODO run howfairis -->
@@ -9,7 +9,7 @@
 [![fair-software badge](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8B-yellow)](https://fair-software.eu)
 [![build](https://github.com/i-VRESSE/mkdocs_rich_argparse/actions/workflows/build.yml/badge.svg)](https://github.com/i-VRESSE/mkdocs_rich_argparse/actions/workflows/build.yml)
 
-An MkDocs plugin to generate documentation for a rich argparse parser.
+An MkDocs plugin to generate documentation for a [rich argparse parser](https://pypi.org/project/rich-argparse/).
 It renders commands, sub commands and sub-sub commands which can have rich help messages.
 
 ## Installation
@@ -38,7 +38,7 @@ Where `my_module` is the Python module containing your argparse parser factory f
 
 When serving or building your MkDocs site, the plugin will generate a `cli.md` file containing the documentation for the specified argparse parser.
 
-See the [example/](example/) directory for a complete working example.
+See the [example/](example/) directory for a minimal example and a custom styled example.
 
 ## Contributing
 

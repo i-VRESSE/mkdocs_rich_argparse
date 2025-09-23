@@ -14,5 +14,5 @@ def sample_parser() -> argparse.ArgumentParser:
     remove_parser = remote_subparsers.add_parser(
         "remove", help="Remove a remote connection", formatter_class=RichHelpFormatter
     )
-    remove_parser.add_argument("name", help="Name of the remote to remove")
+    remove_parser.add_argument("name", help="Name of the remote to remove. Some `syntax` here.", metavar="REMOTE_NAME")
     return parser

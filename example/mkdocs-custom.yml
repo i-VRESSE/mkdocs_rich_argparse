@@ -1,0 +1,20 @@
+site_name: Example
+plugins:
+  - mkdocs_rich_argparse:
+      path: .
+      module: parser
+      factory: sample_parser
+      heading: Commands reference
+      src_uri: commands.md
+      styles:
+        # See https://rich.readthedocs.io/en/stable/style.html
+        args: bright_red
+        groups: bright_green
+        metavar: bright_magenta
+        syntax: dark_orange
+        help: bright_cyan
+        text: bright_yellow
+        default: bright_black
+
+nav:
+  - CLI Reference: commands.md
