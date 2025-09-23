@@ -3,6 +3,7 @@
 import argparse
 import importlib
 import io
+import sys
 from collections.abc import Callable
 from textwrap import dedent
 import mkdocs.config.base
@@ -102,9 +103,9 @@ class MkDocRichArgparseError(PluginError):
     """Base exception for mkdocs_rich_argparse."""
 
 
-def _load_parser(module: str, attribute: str) -> argparse.ArgumentParser:
+def _load_parser(module: str, attribute: str, path: str | None) -> argparse.ArgumentParser:
     """Load and return the argparse parser located at '<module>:<attribute>'."""
-    factory = _load_obj(module, attribute)
+    factory = _load_obj(module, attribute, path)
 
     if not callable(factory):
         msg = f"{attribute!r} must be a callable that returns an 'argparse.ArgumentParser' object"
@@ -119,7 +120,9 @@ def _load_parser(module: str, attribute: str) -> argparse.ArgumentParser:
     return parser
 
 
-def _load_obj(module: str, attribute: str) -> Callable:
+def _load_obj(module: str, attribute: str, path: str | None) -> Callable:
+    if path:
+        sys.path.append(path)
     try:
         mod = importlib.import_module(module)
     except SystemExit:
@@ -138,6 +141,7 @@ class RichArgparsePluginConfig(mkdocs.config.base.Config):
 
     module = mkdocs.config.config_options.Type(str)
     factory = mkdocs.config.config_options.Type(str)
+    path = mkdocs.config.config_options.Optional(mkdocs.config.config_options.Type(str))
 
 
 class RichArgparsePlugin(mkdocs.plugins.BasePlugin[RichArgparsePluginConfig]):
@@ -146,7 +150,7 @@ class RichArgparsePlugin(mkdocs.plugins.BasePlugin[RichArgparsePluginConfig]):
     def on_files(self, files: Files, config: MkDocsConfig) -> Files:
         """Add a generated cli.md file to the documentation."""
         logger.info("Generating CLI documentation...")
-        parser = _load_parser(self.config.module, self.config.factory)
+        parser = _load_parser(self.config.module, self.config.factory, self.config.path)
         docs_content = argparser_to_markdown(parser)
         # TODO instead of adding file replace cli.md with generated content
         # like https://github.com/mkdocs/mkdocs-click/blob/master/mkdocs_click/_extension.py

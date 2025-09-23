@@ -1,0 +1,10 @@
+site_name: Example
+
+plugins:
+  - mkdocs_rich_argparse:
+      path: .
+      module: parser
+      factory: sample_parser
+
+nav:
+  - CLI Reference: cli.md

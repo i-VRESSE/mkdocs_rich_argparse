@@ -34,11 +34,11 @@ nav:
    - CLI Reference: cli.md
 ```
 
-Where `my_module` is the Python module containing your argparse parser factory function, and `my_factory_function` is the specific function that returns an argparse parser object. It should be callable without arguments.
+Where `my_module` is the Python module containing your argparse parser factory function, and `my_factory_function` is the specific function that returns an argparse parser object. It should be callable without arguments. You can optionally add `path` to specify the path to the module if it's not in the Python path.
 
 When serving or building your MkDocs site, the plugin will generate a `cli.md` file containing the documentation for the specified argparse parser.
 
-<!-- TODO add screenshot of rendered markdown of sample_parser in tests/test_plugin.py -->
+See the [example/](example/) directory for a complete working example.
 
 ## Contributing
 

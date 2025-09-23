@@ -21,6 +21,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
     "mkdocs>=1.6.1",
@@ -33,7 +34,7 @@ license = {file = "LICENSE"}
 # TODO replace _ with - in package name on pypi and GH
 name = "mkdocs_rich_argparse"
 readme = {file = "README.md", content-type = "text/markdown"}
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dynamic = ["version"]
 
 # TODO convert to dependency groups
@@ -106,6 +107,9 @@ pydocstyle.convention = "google"
     "S101",   # Use of assert is detected
     "D103",   # Missing docstring in public function
     "PLR2004", # tests are magic
+]
+"example/**.py" = [
+    "INP001",   # Allow lone module
 ]
 
 [tool.ruff.lint.isort]
