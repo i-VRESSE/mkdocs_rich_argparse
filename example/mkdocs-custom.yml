@@ -1,6 +1,6 @@
 site_name: Example
 plugins:
-  - mkdocs_rich_argparse:
+  - mkdocs-rich-argparse:
       path: .
       module: parser
       factory: sample_parser

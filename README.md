@@ -1,13 +1,11 @@
 ## Mkdocs rich argparse
 
-<!-- TODO add to RSD and Pypi-->
-<!-- TODO run howfairis -->
 [![github repo badge](https://img.shields.io/badge/github-repo-000.svg?logo=github&labelColor=gray&color=blue)](https://github.com/i-VRESSE/mkdocs_rich_argparse)
 [![github license badge](https://img.shields.io/github/license/i-VRESSE/mkdocs_rich_argparse)](https://github.com/i-VRESSE/mkdocs_rich_argparse)
-[![RSD](https://img.shields.io/badge/rsd-mkdocs_rich_argparse-00a3e3.svg)](https://www.research-software.nl/software/mkdocs_rich_argparse)
-[![workflow pypi badge](https://img.shields.io/pypi/v/mkdocs_rich_argparse.svg?colorB=blue)](https://pypi.python.org/project/mkdocs_rich_argparse/)
+[![RSD](https://img.shields.io/badge/rsd-mkdocs_rich_argparse-00a3e3.svg)](https://research-software-directory.org/software/mkdocs-rich-argparse)
+[![workflow pypi badge](https://img.shields.io/pypi/v/mkdocs_rich_argparse.svg?colorB=blue)](https://pypi.org/project/mkdocs-rich-argparse)
 [![fair-software badge](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8B-yellow)](https://fair-software.eu)
-[![build](https://github.com/i-VRESSE/mkdocs_rich_argparse/actions/workflows/build.yml/badge.svg)](https://github.com/i-VRESSE/mkdocs_rich_argparse/actions/workflows/build.yml)
+[![CI](https://github.com/i-VRESSE/mkdocs_rich_argparse/actions/workflows/build.yml/badge.svg)](https://github.com/i-VRESSE/mkdocs_rich_argparse/actions/workflows/build.yml)
 
 An MkDocs plugin to generate documentation for a [rich argparse parser](https://pypi.org/project/rich-argparse/).
 It renders commands, sub commands and sub-sub commands which can have rich help messages.
@@ -17,7 +15,7 @@ It renders commands, sub commands and sub-sub commands which can have rich help 
 Install from Pypi:
 
 ```bash
-pip install mkdocs_rich_argparse
+pip install mkdocs-rich-argparse
 ```
 
 ## Usage
@@ -26,7 +24,7 @@ In your `mkdocs.yml` configuration file, add the plugin and configure it with th
 
 ```yaml
 plugins:
-    - mkdocs_rich_argparse:
+    - mkdocs-rich-argparse:
         module: my_module
         factory: my_factory_function
 

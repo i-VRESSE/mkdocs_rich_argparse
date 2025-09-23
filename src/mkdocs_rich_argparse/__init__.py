@@ -17,7 +17,7 @@ from rich.console import Console
 from rich.text import Text
 from rich_argparse import RichHelpFormatter
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 logger = mkdocs.plugins.get_plugin_logger(__name__)
 
