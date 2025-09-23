@@ -2,7 +2,6 @@ import argparse
 from textwrap import dedent
 import pytest
 from rich_argparse import RichHelpFormatter
-from mkdocs_rich_argparse import RichArgparseStyles
 from mkdocs_rich_argparse import argparser_to_markdown
 
 
