@@ -15,7 +15,7 @@ classifiers = [
     "Development Status :: 2 - Pre-Alpha",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
-    "",
+    "License :: OSI Approved :: Apache Software License",
     "Natural Language :: English",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
@@ -29,7 +29,7 @@ dependencies = [
     "rich-argparse>=1.7.1",
 ]
 description = "An MkDocs plugin to generate documentation for a rich argparse parser"
-keywords = ["argparse","mkdocs","mkdocs-plugin","rich"]
+keywords = ["argparse", "mkdocs", "mkdocs-plugin", "rich"]
 license = {file = "LICENSE"}
 name = "mkdocs_rich_argparse"
 readme = {file = "README.md", content-type = "text/markdown"}
