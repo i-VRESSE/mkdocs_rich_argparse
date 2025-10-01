@@ -40,6 +40,18 @@ See the [example/](example/) directory for a minimal example and a custom styled
 
 [![Screenshot of example](https://github.com/i-VRESSE/mkdocs_rich_argparse/raw/main/example/screenshot.png)](https://github.com/i-VRESSE/mkdocs_rich_argparse/raw/main/example/screenshot.png)
 
+### Colors in Continuous Integration
+
+If you are building the mkdocs site in a Continuous Integration (CI) environment, the colors might not render correctly. To fix this add [TTY_COMPATIBLE=1 and TTY_INTERACTIVE=0 environment variables](https://rich.readthedocs.io/en/stable/console.html#environment-variables) to your CI configuration.
+
+For example in GitHub Actions add the following to your workflow file:
+
+```yaml
+env:
+    TTY_COMPATIBLE: '1'
+    TTY_INTERACTIVE: '0'
+```
+
 ## Contributing
 
 If you want to contribute to the development of mkdocs_rich_argparse,
