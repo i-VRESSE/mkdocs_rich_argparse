@@ -6,6 +6,7 @@ import io
 import sys
 from collections.abc import Callable
 from textwrap import dedent
+from typing import cast
 import mkdocs.config.base
 import mkdocs.config.config_options
 import mkdocs.plugins
@@ -27,7 +28,14 @@ def _capture_help(parser: argparse.ArgumentParser) -> str:
     # Based on https://github.com/hamdanal/rich-argparse/blob/e28584ac56ddd46f4079d037c27f24f0ec4eccb4/rich_argparse/_argparse.py#L545
     # but with export instead of save
 
-    text = Text.from_ansi(parser.format_help())
+    # Temporarily set RichHelpFormatter to get colored output
+    original_formatter = parser.formatter_class
+    parser.formatter_class = RichHelpFormatter
+    try:
+        text = Text.from_ansi(parser.format_help())
+    finally:
+        parser.formatter_class = original_formatter
+
     console = Console(file=io.StringIO(), record=True)
     console.print(text, crop=False)
     code_format = dedent("""\
@@ -58,7 +66,8 @@ def argparser_to_markdown(parser: argparse.ArgumentParser, heading: str = "CLI R
     subparsers_actions = [action for action in parser._actions if isinstance(action, argparse._SubParsersAction)]
     current_subparsers_action = subparsers_actions[0]
 
-    for sub_cmd_name, sub_cmd_parser in current_subparsers_action.choices.items():
+    for sub_cmd_name, _sub_cmd_parser in current_subparsers_action.choices.items():
+        sub_cmd_parser = cast("argparse.ArgumentParser", _sub_cmd_parser)
         sub_cmd_help_text = _capture_help(sub_cmd_parser)
 
         lines.extend(
@@ -77,7 +86,8 @@ def argparser_to_markdown(parser: argparse.ArgumentParser, heading: str = "CLI R
         ]
         if sub_subparsers_actions:
             sub_current_subparsers_action = sub_subparsers_actions[0]
-            for sub_sub_cmd_name, sub_sub_cmd_parser in sub_current_subparsers_action.choices.items():
+            for sub_sub_cmd_name, _sub_sub_cmd_parser in sub_current_subparsers_action.choices.items():
+                sub_sub_cmd_parser = cast("argparse.ArgumentParser", _sub_sub_cmd_parser)
                 sub_sub_cmd_help_text = _capture_help(sub_sub_cmd_parser)
 
                 lines.extend(
@@ -133,6 +143,7 @@ def _load_obj(module: str, attribute: str, path: str | None) -> Callable:
 class RichArgparseStyles(mkdocs.config.base.Config):
     """Configuration for styles applied to the generated documentation."""
 
+    prog = mkdocs.config.config_options.Optional(mkdocs.config.config_options.Type(str))
     args = mkdocs.config.config_options.Optional(mkdocs.config.config_options.Type(str))
     groups = mkdocs.config.config_options.Optional(mkdocs.config.config_options.Type(str))
     # Overwrite default colors as on mkdocs black text is not visible in dark mode
