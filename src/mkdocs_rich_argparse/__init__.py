@@ -6,6 +6,7 @@ import io
 import sys
 from collections.abc import Callable
 from textwrap import dedent
+from typing import cast
 import mkdocs.config.base
 import mkdocs.config.config_options
 import mkdocs.plugins
@@ -65,7 +66,8 @@ def argparser_to_markdown(parser: argparse.ArgumentParser, heading: str = "CLI R
     subparsers_actions = [action for action in parser._actions if isinstance(action, argparse._SubParsersAction)]
     current_subparsers_action = subparsers_actions[0]
 
-    for sub_cmd_name, sub_cmd_parser in current_subparsers_action.choices.items():
+    for sub_cmd_name, _sub_cmd_parser in current_subparsers_action.choices.items():
+        sub_cmd_parser = cast("argparse.ArgumentParser", _sub_cmd_parser)
         sub_cmd_help_text = _capture_help(sub_cmd_parser)
 
         lines.extend(
@@ -84,7 +86,8 @@ def argparser_to_markdown(parser: argparse.ArgumentParser, heading: str = "CLI R
         ]
         if sub_subparsers_actions:
             sub_current_subparsers_action = sub_subparsers_actions[0]
-            for sub_sub_cmd_name, sub_sub_cmd_parser in sub_current_subparsers_action.choices.items():
+            for sub_sub_cmd_name, _sub_sub_cmd_parser in sub_current_subparsers_action.choices.items():
+                sub_sub_cmd_parser = cast("argparse.ArgumentParser", _sub_sub_cmd_parser)
                 sub_sub_cmd_help_text = _capture_help(sub_sub_cmd_parser)
 
                 lines.extend(
