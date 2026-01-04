@@ -133,6 +133,7 @@ def _load_obj(module: str, attribute: str, path: str | None) -> Callable:
 class RichArgparseStyles(mkdocs.config.base.Config):
     """Configuration for styles applied to the generated documentation."""
 
+    prog = mkdocs.config.config_options.Optional(mkdocs.config.config_options.Type(str))
     args = mkdocs.config.config_options.Optional(mkdocs.config.config_options.Type(str))
     groups = mkdocs.config.config_options.Optional(mkdocs.config.config_options.Type(str))
     # Overwrite default colors as on mkdocs black text is not visible in dark mode
