@@ -27,7 +27,14 @@ def _capture_help(parser: argparse.ArgumentParser) -> str:
     # Based on https://github.com/hamdanal/rich-argparse/blob/e28584ac56ddd46f4079d037c27f24f0ec4eccb4/rich_argparse/_argparse.py#L545
     # but with export instead of save
 
-    text = Text.from_ansi(parser.format_help())
+    # Temporarily set RichHelpFormatter to get colored output
+    original_formatter = parser.formatter_class
+    parser.formatter_class = RichHelpFormatter
+    try:
+        text = Text.from_ansi(parser.format_help())
+    finally:
+        parser.formatter_class = original_formatter
+
     console = Console(file=io.StringIO(), record=True)
     console.print(text, crop=False)
     code_format = dedent("""\
