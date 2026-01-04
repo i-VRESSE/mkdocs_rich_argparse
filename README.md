@@ -7,8 +7,10 @@
 [![fair-software badge](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8B-yellow)](https://fair-software.eu)
 [![CI](https://github.com/i-VRESSE/mkdocs_rich_argparse/actions/workflows/build.yml/badge.svg)](https://github.com/i-VRESSE/mkdocs_rich_argparse/actions/workflows/build.yml)
 
-An MkDocs plugin to generate documentation for a [rich argparse parser](https://pypi.org/project/rich-argparse/).
-It renders commands, sub commands and sub-sub commands which can have rich help messages.
+An MkDocs plugin to generate documentation for any argparse parser with [rich-argparse](https://pypi.org/project/rich-argparse/) styling.
+It renders commands, sub commands and sub-sub commands with colored output.
+
+The plugin works with **any** `argparse.ArgumentParser` - you don't need to modify your parser to use `RichHelpFormatter`.
 
 ## Installation
 
@@ -39,6 +41,25 @@ When serving or building your MkDocs site, the plugin will generate a `cli.md` f
 See the [example/](example/) directory for a minimal example and a custom styled example.
 
 [![Screenshot of example](https://github.com/i-VRESSE/mkdocs_rich_argparse/raw/main/example/screenshot.png)](https://github.com/i-VRESSE/mkdocs_rich_argparse/raw/main/example/screenshot.png)
+
+### Custom Styles
+
+You can customize the colors used in the generated documentation:
+
+```yaml
+plugins:
+    - mkdocs-rich-argparse:
+        module: my_module
+        factory: my_factory_function
+        styles:
+            prog: "#00ff00"      # Program name in usage
+            args: "#ff0000"      # Arguments and options
+            groups: "#00ffff"    # Group headers
+            metavar: "#ff00ff"   # Metavariables (e.g., FILE)
+            help: white          # Help text
+            text: white          # Description text
+            default: grey50      # Default values
+```
 
 ### Colors in Continuous Integration
 
