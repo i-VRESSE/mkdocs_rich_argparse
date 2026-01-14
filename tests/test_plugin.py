@@ -103,6 +103,7 @@ def sample_parser_without_subcommands():
     parser.add_argument("--verbose", action="store_true", help="Enable verbose mode")
     return parser
 
+
 def test_argparser_to_markdown_without_subcommands(sample_parser_without_subcommands: argparse.ArgumentParser):
     result = argparser_to_markdown(sample_parser_without_subcommands, heading="My Program CLI")
 
