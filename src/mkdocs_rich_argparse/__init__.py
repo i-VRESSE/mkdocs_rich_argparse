@@ -56,6 +56,11 @@ def argparser_to_markdown(parser: argparse.ArgumentParser, heading: str = "CLI R
     ]
 
     subparsers_actions = [action for action in parser._actions if isinstance(action, argparse._SubParsersAction)]
+
+    # Only process subcommands if they exist
+    if not subparsers_actions:
+        return "\n".join(lines)
+
     current_subparsers_action = subparsers_actions[0]
 
     for sub_cmd_name, sub_cmd_parser in current_subparsers_action.choices.items():
