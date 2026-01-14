@@ -93,3 +93,37 @@ def test_argparser_to_markdown_with_color(monkeypatch: pytest.MonkeyPatch, sampl
 
     assert len(result) > 3500
     assert '<span style="color: #008080; text-decoration-color: #008080">' in result
+
+
+@pytest.fixture
+def sample_parser_without_subcommands():
+    parser = argparse.ArgumentParser(
+        prog="myprogram", description="This is my program.", formatter_class=RichHelpFormatter
+    )
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose mode")
+    return parser
+
+def test_argparser_to_markdown_without_subcommands(sample_parser_without_subcommands: argparse.ArgumentParser):
+    result = argparser_to_markdown(sample_parser_without_subcommands, heading="My Program CLI")
+
+    expected = dedent("""\
+        # My Program CLI
+        Documentation for the `myprogram` script.
+        ```console
+        myprogram --help
+        ```
+        <pre style="font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">
+        <code style="font-family:inherit" class="nohighlight">
+        Usage: myprogram [-h] [--verbose]
+
+        This is my program.
+
+        Options:
+          -h, --help  show this help message and exit
+          --verbose   Enable verbose mode
+
+        </code>
+        </pre>
+    """)
+
+    assert result == expected
