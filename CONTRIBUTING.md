@@ -46,7 +46,7 @@ In case you feel like you've made a valuable contribution, but you don't know ho
 To create a release you need write permission on the repository.
 
 1. Check the author list in [`CITATION.cff`](CITATION.cff)
-2. Bump the version in `mkdocs_rich_argparse/__init__.py, pyproject.toml`.
+2. Bump the version in `mkdocs_rich_argparse/__init__.py`.
 3. Go to the [GitHub release page](https://github.com/i-VRESSE/mkdocs_rich_argparse/releases)
 4. Press draft a new release button
 5. Fill version, title and description field

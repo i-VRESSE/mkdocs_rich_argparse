@@ -51,6 +51,8 @@ coverage report
 
 `coverage` can also generate output in HTML and other formats; see `coverage help` for more information.## Running linters locally
 
+## Linting and formatting
+
 For linting and sorting imports we will use [ruff](https://docs.astral.sh/ruff/). Running the linters requires [uv](https://docs.astral.sh/uv) installed.
 
 ```shell
@@ -61,6 +63,8 @@ uvx ruff check .
 uvx ruff check . --fix
 ```
 
-### (3/3) GitHub
+For formatting we also use ruff
 
-Don't forget to also make a [release on GitHub](https://github.com/i-VRESSE/mkdocs_rich_argparse/releases/new).
+```shell
+uvx ruff format .
+```
