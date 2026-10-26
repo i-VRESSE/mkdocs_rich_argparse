@@ -105,7 +105,7 @@ class MkDocRichArgparseError(PluginError):
     """Base exception for mkdocs_rich_argparse."""
 
 
-class _ParserCapturedError(Exception):
+class _ParserCapturedError(BaseException):
     def __init__(self, parser: argparse.ArgumentParser):
         self.parser = parser
 

@@ -275,6 +275,28 @@ def test_missing_entry_points():
         _entry_points_to_markdown("nonexistent-test-distribution", "CLI")
 
 
+@pytest.mark.parametrize("parse_method", ["parse_args", "parse_known_args"])
+def test_entry_point_capture_bypasses_exception_handler(monkeypatch: pytest.MonkeyPatch, parse_method: str):
+    module = ModuleType("wrapped_cli")
+    parser = argparse.ArgumentParser(prog="wrapped")
+    events = []
+
+    def main() -> None:
+        try:
+            getattr(parser, parse_method)()
+        except Exception:  # noqa: BLE001 - model a CLI's application error handler
+            events.append("error handler")
+        events.append("CLI work")
+
+    module.main = main
+    monkeypatch.setitem(sys.modules, "wrapped_cli", module)
+    expected = (sys.argv, argparse.ArgumentParser.parse_args, argparse.ArgumentParser.parse_known_args)
+    captured = _load_entry_point_parser(EntryPoint(name="wrapped", value="wrapped_cli:main", group="console_scripts"))
+    assert captured is parser
+    assert events == []
+    assert (sys.argv, argparse.ArgumentParser.parse_args, argparse.ArgumentParser.parse_known_args) == expected
+
+
 @pytest.mark.parametrize("body", ["pass", "raise SystemExit(2)", "raise ValueError('broken')"])
 def test_entry_point_failure_restores_state(monkeypatch: pytest.MonkeyPatch, body: str):
     module = ModuleType("broken_cli")
