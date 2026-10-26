@@ -1,11 +1,19 @@
 site_name: Example
+theme:
+  name: mkdocs
+  # Include subcommands such as remote remove in the sidebar.
+  navigation_depth: 3
+
 plugins:
   - mkdocs-rich-argparse:
       package: mkdocs-rich-argparse-example
+      # Document mysecondprogram before myprogram.
       order:
         - mysecondprogram
+      # Customize the generated page's title and path.
       heading: Commands reference
       src_uri: commands.md
+      # Override the colors used for CLI help output.
       styles:
         # See https://rich.readthedocs.io/en/stable/style.html
         args: bright_red
@@ -17,4 +25,5 @@ plugins:
         default: bright_black
 
 nav:
+  # Link to the customized page path.
   - CLI Reference: commands.md

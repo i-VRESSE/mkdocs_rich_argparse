@@ -17,8 +17,7 @@ to `site/cli/index.html`.
 It should look something like this:
 [![Screenshot](screenshot.png)](screenshot.png)
 
-The plugin can be further configured see [mkdocs-custom.yml](mkdocs-custom.yml) for an example.
-That configuration uses `order` to document `mysecondprogram` before `myprogram`.
+See [mkdocs-custom.yml](mkdocs-custom.yml) for a commented example of plugin customization.
 
 ```shell
 mkdocs build -f mkdocs-custom.yml
