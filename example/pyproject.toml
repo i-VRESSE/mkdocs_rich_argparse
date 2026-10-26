@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mkdocs-rich-argparse-example"
+version = "0.1.0"
+dependencies = ["mkdocs-rich-argparse>=0.2.0"]
+
+[project.scripts]
+myprogram = "parser:main"
+mysecondprogram = "parser:download"
+
+[tool.setuptools]
+py-modules = ["parser"]

@@ -1,9 +1,9 @@
 site_name: Example
 plugins:
   - mkdocs-rich-argparse:
-      path: .
-      module: parser
-      factory: sample_parser
+      package: mkdocs-rich-argparse-example
+      order:
+        - mysecondprogram
       heading: Commands reference
       src_uri: commands.md
       styles:

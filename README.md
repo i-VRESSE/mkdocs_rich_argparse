@@ -12,39 +12,106 @@ It renders commands, sub commands and sub-sub commands which can have rich help 
 
 ## Installation
 
-Install from Pypi:
-
 ```bash
 pip install mkdocs-rich-argparse
 ```
 
 ## Usage
 
-In your `mkdocs.yml` configuration file, add the plugin and configure it with the module and factory to document:
+**TL;DR:** Set `package` to your installed CLI package's project name and add
+`cli.md` to your navigation.
 
-```yaml
-plugins:
-    - mkdocs-rich-argparse:
-        module: my_module
-        factory: my_factory_function
+1. Define your commands in your package's `pyproject.toml` using `[project.scripts]`:
 
-nav:
-   - CLI Reference: cli.md
-```
+   ```toml
+   [project]
+   name = "my-package"
 
-Where `my_module` is the Python module containing your argparse parser factory function, and `my_factory_function` is the specific function that returns an argparse parser object. It should be callable without arguments. You can optionally add `path` to specify the path to the module if it's not in the Python path.
+   [project.scripts]
+   myprogram = "my_package.cli:main"
+   mysecondprogram = "my_package.cli:download"
+   ```
 
-When serving or building your MkDocs site, the plugin will generate a `cli.md` file containing the documentation for the specified argparse parser.
+2. Ensure your CLI package is installed alongside the plugin so its script
+   metadata is available.
+
+3. In `mkdocs.yml`, set `package` to the `[project].name` value from your
+   `pyproject.toml` and add the generated page to your navigation:
+
+   ```yaml
+   plugins:
+       - mkdocs-rich-argparse:
+           package: my-package
+
+   nav:
+       - CLI Reference: cli.md
+   ```
+
+Parsers are captured at `parse_args()` or `parse_known_args()`. Code before
+parsing still executes during the documentation build.
 
 See the [example/](example/) directory for a minimal example and a custom styled example.
 
 [![Screenshot of example](https://github.com/i-VRESSE/mkdocs_rich_argparse/raw/main/example/screenshot.png)](https://github.com/i-VRESSE/mkdocs_rich_argparse/raw/main/example/screenshot.png)
 
-### Colors in Continuous Integration
+## Configuration
 
-If you are building the mkdocs site in a Continuous Integration (CI) environment, the colors might not render correctly. To fix this add [TTY_COMPATIBLE=1 and TTY_INTERACTIVE=0 environment variables](https://rich.readthedocs.io/en/stable/console.html#environment-variables) to your CI configuration.
+`package` is required. All other plugin settings are optional and belong under
+`mkdocs-rich-argparse` in `mkdocs.yml`:
 
-For example in GitHub Actions add the following to your workflow file:
+| Setting | Default | Description |
+| --- | --- | --- |
+| `src_uri` | `cli.md` | Generated page path relative to the docs directory. Update `nav` to match. |
+| `heading` | `CLI Reference` | Top-level heading of the generated page. |
+| `order` | `[]` | Script names to document first, in the specified order. |
+| `styles` | See below | Rich styles for the generated help text. |
+
+For example, customize the page path and heading and put your main script first:
+
+```yaml
+plugins:
+  - mkdocs-rich-argparse:
+      package: my-package
+      src_uri: reference/commands.md
+      heading: Commands
+      order:
+        - myprogram
+
+nav:
+  - Commands: reference/commands.md
+```
+
+Scripts listed in `order` appear first, in the specified order.
+All remaining scripts are sorted alphabetically.
+Unknown or duplicate script names cause a build error.
+If no `order` is specified, all scripts are sorted alphabetically.
+
+### Styles
+
+The `styles` mapping accepts Rich style strings for `args`, `groups`, `help`,
+`metavar`, `syntax`, `text`, and `default`. The plugin sets `help` and `text` to
+`green` by default so they remain visible in dark mode. Other values keep the
+current `RichHelpFormatter` styles unless overridden.
+
+```yaml
+plugins:
+  - mkdocs-rich-argparse:
+      package: my-package
+      styles:
+        args: bright_red
+        groups: bright_green
+        metavar: bright_magenta
+        syntax: dark_orange
+        help: bright_cyan
+        text: bright_yellow
+        default: bright_black
+```
+
+## Colors in Continuous Integration
+
+To preserve Rich colors in CI, set these
+[environment variables](https://rich.readthedocs.io/en/stable/console.html#environment-variables)
+(GitHub Actions example):
 
 ```yaml
 env:
