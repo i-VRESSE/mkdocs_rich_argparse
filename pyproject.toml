@@ -85,6 +85,7 @@ ignore = [
     "D107", # Missing docstring in `__init__`
     "COM812", # Conflicts with formatter
     "SLF001", # Needed to get to argparse content
+    "CPY001", # root LICENSE is enough, no need for copyright notice in each file
 ]
 pydocstyle.convention = "google"
 
