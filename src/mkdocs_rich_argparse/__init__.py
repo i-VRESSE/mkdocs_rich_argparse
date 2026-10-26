@@ -132,7 +132,7 @@ def _load_entry_point_parser(entry_point: importlib.metadata.EntryPoint) -> argp
     raise MkDocRichArgparseError(msg)
 
 
-def _entry_points_to_markdown(distribution: str, heading: str) -> str:
+def _entry_points_to_markdown(distribution: str, heading: str, order: list[str] | None = None) -> str:
     """Document all console scripts belonging to an installed distribution."""
     normalized_name = re.sub(r"[-_.]+", "-", distribution).lower()
     scripts = [
@@ -143,6 +143,17 @@ def _entry_points_to_markdown(distribution: str, heading: str) -> str:
     if not scripts:
         msg = f"No console_scripts entry points found for distribution {distribution!r}; ensure it is installed"
         raise MkDocRichArgparseError(msg)
+    if order:
+        names = {entry_point.name for entry_point in scripts}
+        unknown = [name for name in order if name not in names]
+        if unknown:
+            msg = f"Unknown console scripts in order for distribution {distribution!r}: {', '.join(unknown)}"
+            raise MkDocRichArgparseError(msg)
+        if len(order) != len(set(order)):
+            msg = "order must not contain duplicate console script names"
+            raise MkDocRichArgparseError(msg)
+        positions = {name: index for index, name in enumerate(order)}
+        scripts.sort(key=lambda entry_point: positions.get(entry_point.name, len(order)))
     sections = [f"# {heading}"]
     for entry_point in scripts:
         parser = _load_entry_point_parser(entry_point)
@@ -175,6 +186,7 @@ class RichArgparsePluginConfig(mkdocs.config.base.Config):
     package = mkdocs.config.config_options.Type(str)
     src_uri = mkdocs.config.config_options.Type(str, default="cli.md")
     heading = mkdocs.config.config_options.Type(str, default="CLI Reference")
+    order = mkdocs.config.config_options.ListOfItems(mkdocs.config.config_options.Type(str), default=[])
     styles = mkdocs.config.config_options.SubConfig(RichArgparseStyles)
 
 
@@ -192,7 +204,7 @@ class RichArgparsePlugin(mkdocs.plugins.BasePlugin[RichArgparsePluginConfig]):
         """Add a generated cli.md file to the documentation."""
         logger.info("Generating CLI documentation...")
         self.config.styles.apply()
-        docs_content = _entry_points_to_markdown(self.config.package, self.config.heading)
+        docs_content = _entry_points_to_markdown(self.config.package, self.config.heading, self.config.order)
         cli_md_file = File.generated(
             config=config,
             src_uri=self.config.src_uri,

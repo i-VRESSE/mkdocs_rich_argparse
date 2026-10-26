@@ -204,6 +204,52 @@ def test_entry_points_page(installed_scripts: Path, options: dict[str, str], src
 
 
 @pytest.mark.parametrize(
+    ("order", "expected"),
+    [
+        ([], ["example-score", "example", "example-aux"]),
+        (["example"], ["example", "example-score", "example-aux"]),
+        (["example-aux", "example"], ["example-aux", "example", "example-score"]),
+    ],
+)
+def test_script_order(installed_scripts: Path, order: list[str], expected: list[str]):
+    metadata = installed_scripts / "example_cli-1.0.dist-info" / "entry_points.txt"
+    metadata.write_text(metadata.read_text().replace("[other_group]", "example-aux = example_cli:main\n[other_group]"))
+    plugin = RichArgparsePlugin()
+    errors, warnings = plugin.load_config({"package": "example-cli", "order": order})
+    assert not errors
+    assert not warnings
+    config = MkDocsConfig()
+    config.plugins = PluginCollection()
+    config.plugins._current_plugin = None
+    config.site_dir = str(installed_scripts / "site")
+    plugin.on_config(config)
+    files = plugin.on_files(Files([]), config=config)
+    page = next(iter(files))
+    headings = [line.removeprefix("## ") for line in page.content_string.splitlines() if line.startswith("## ")]
+    assert headings == expected
+
+
+@pytest.mark.parametrize("order", ["example", [1]])
+def test_invalid_order_config(order: object):
+    plugin = RichArgparsePlugin()
+    errors, _ = plugin.load_config({"package": "example-cli", "order": order})
+    assert [key for key, _ in errors] == ["order"]
+
+
+@pytest.mark.parametrize(
+    ("order", "message"),
+    [
+        (["missing"], "Unknown console scripts.*missing"),
+        (["example", "example"], "duplicate console script names"),
+    ],
+)
+@pytest.mark.usefixtures("installed_scripts")
+def test_invalid_script_order(order: list[str], message: str):
+    with pytest.raises(MkDocRichArgparseError, match=message):
+        _entry_points_to_markdown("example-cli", "CLI", order)
+
+
+@pytest.mark.parametrize(
     "options",
     [
         {},
