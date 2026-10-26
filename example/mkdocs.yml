@@ -2,9 +2,7 @@ site_name: Example
 
 plugins:
   - mkdocs-rich-argparse:
-      path: .
-      module: parser
-      factory: sample_parser
+      package: mkdocs-rich-argparse-example
 
 nav:
   - CLI Reference: cli.md

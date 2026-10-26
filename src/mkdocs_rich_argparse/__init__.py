@@ -1,11 +1,12 @@
 """Documentation about mkdocs_rich_argparse."""
 
 import argparse
-import importlib
+import importlib.metadata
 import io
+import re
 import sys
-from collections.abc import Callable
 from textwrap import dedent
+from unittest.mock import patch
 import mkdocs.config.base
 import mkdocs.config.config_options
 import mkdocs.plugins
@@ -17,7 +18,7 @@ from rich.console import Console
 from rich.text import Text
 from rich_argparse import RichHelpFormatter
 
-__version__ = "0.1.3"
+__version__ = "0.2.0"
 
 logger = mkdocs.plugins.get_plugin_logger(__name__)
 
@@ -40,14 +41,16 @@ def _capture_help(parser: argparse.ArgumentParser) -> str:
     return console.export_html(code_format=code_format, inline_styles=True)
 
 
-def argparser_to_markdown(parser: argparse.ArgumentParser, heading: str = "CLI Reference") -> str:
+def argparser_to_markdown(
+    parser: argparse.ArgumentParser, heading: str = "CLI Reference", *, heading_level: int = 1
+) -> str:
     """Convert an argparse parser to markdown documentation."""
     prog = parser.prog
 
     main_help = _capture_help(parser)
 
     lines = [
-        f"# {heading}",
+        f"{'#' * heading_level} {heading}",
         f"Documentation for the `{prog}` script.",
         "```console",
         f"{prog} --help",
@@ -68,7 +71,7 @@ def argparser_to_markdown(parser: argparse.ArgumentParser, heading: str = "CLI R
 
         lines.extend(
             [
-                f"## {sub_cmd_name}",
+                f"{'#' * (heading_level + 1)} {sub_cmd_name}",
                 "```console",
                 f"{prog} {sub_cmd_name} --help",
                 "```",
@@ -87,7 +90,7 @@ def argparser_to_markdown(parser: argparse.ArgumentParser, heading: str = "CLI R
 
                 lines.extend(
                     [
-                        f"## {sub_cmd_name} {sub_sub_cmd_name}",
+                        f"{'#' * (heading_level + 1)} {sub_cmd_name} {sub_sub_cmd_name}",
                         "```console",
                         f"{prog} {sub_cmd_name} {sub_sub_cmd_name} --help",
                         "```",
@@ -102,37 +105,60 @@ class MkDocRichArgparseError(PluginError):
     """Base exception for mkdocs_rich_argparse."""
 
 
-def _load_parser(module: str, attribute: str, path: str | None) -> argparse.ArgumentParser:
-    """Load and return the argparse parser located at '<module>:<attribute>'."""
-    factory = _load_obj(module, attribute, path)
-
-    if not callable(factory):
-        msg = f"{attribute!r} must be a callable that returns an 'argparse.ArgumentParser' object"
-        raise MkDocRichArgparseError(msg)
-
-    parser = factory()
-
-    if not isinstance(parser, argparse.ArgumentParser):
-        msg = f"{attribute!r} must be a 'argparse.ArgumentParser' object, got {type(parser)}"
-        raise MkDocRichArgparseError(msg)
-
-    return parser
+class _ParserCapturedError(BaseException):
+    def __init__(self, parser: argparse.ArgumentParser):
+        self.parser = parser
 
 
-def _load_obj(module: str, attribute: str, path: str | None) -> Callable:
-    if path:
-        sys.path.append(path)
-    try:
-        mod = importlib.import_module(module)
-    except SystemExit:
-        msg = "the module appeared to call sys.exit()"
-        raise MkDocRichArgparseError(msg) from None
+def _load_entry_point_parser(entry_point: importlib.metadata.EntryPoint) -> argparse.ArgumentParser:
+    """Capture a console script's parser before it processes arguments."""
+
+    def capture(parser: argparse.ArgumentParser, *_args: object, **_kwargs: object) -> None:
+        raise _ParserCapturedError(parser)
 
     try:
-        return getattr(mod, attribute)
-    except AttributeError as exc:
-        msg = f"Module {module!r} has no attribute {attribute!r}"
+        with (
+            patch.object(sys, "argv", [entry_point.name, "--help"]),
+            patch.object(argparse.ArgumentParser, "parse_args", capture),
+            patch.object(argparse.ArgumentParser, "parse_known_args", capture),
+        ):
+            entry_point.load()()
+    except _ParserCapturedError as captured:
+        return captured.parser
+    except (Exception, SystemExit) as exc:
+        msg = f"Could not load argparse parser for console script {entry_point.name!r}: {exc}"
         raise MkDocRichArgparseError(msg) from exc
+    msg = f"Console script {entry_point.name!r} did not parse arguments with argparse"
+    raise MkDocRichArgparseError(msg)
+
+
+def _entry_points_to_markdown(distribution: str, heading: str, order: list[str] | None = None) -> str:
+    """Document all console scripts belonging to an installed distribution."""
+    normalized_name = re.sub(r"[-_.]+", "-", distribution).lower()
+    scripts = [
+        entry_point
+        for entry_point in importlib.metadata.entry_points(group="console_scripts")
+        if entry_point.dist is not None and re.sub(r"[-_.]+", "-", entry_point.dist.name).lower() == normalized_name
+    ]
+    if not scripts:
+        msg = f"No console_scripts entry points found for distribution {distribution!r}; ensure it is installed"
+        raise MkDocRichArgparseError(msg)
+    if order:
+        names = {entry_point.name for entry_point in scripts}
+        unknown = [name for name in order if name not in names]
+        if unknown:
+            msg = f"Unknown console scripts in order for distribution {distribution!r}: {', '.join(unknown)}"
+            raise MkDocRichArgparseError(msg)
+        if len(order) != len(set(order)):
+            msg = "order must not contain duplicate console script names"
+            raise MkDocRichArgparseError(msg)
+        positions = {name: index for index, name in enumerate(order)}
+        scripts.sort(key=lambda entry_point: positions.get(entry_point.name, len(order)))
+    sections = [f"# {heading}"]
+    for entry_point in scripts:
+        parser = _load_entry_point_parser(entry_point)
+        sections.append(argparser_to_markdown(parser, heading=entry_point.name, heading_level=2))
+    return "\n\n".join(sections)
 
 
 class RichArgparseStyles(mkdocs.config.base.Config):
@@ -157,23 +183,28 @@ class RichArgparseStyles(mkdocs.config.base.Config):
 class RichArgparsePluginConfig(mkdocs.config.base.Config):
     """Configuration for the RichArgparsePlugin."""
 
-    module = mkdocs.config.config_options.Type(str)
-    factory = mkdocs.config.config_options.Type(str)
-    path = mkdocs.config.config_options.Optional(mkdocs.config.config_options.Type(str))
+    package = mkdocs.config.config_options.Type(str)
     src_uri = mkdocs.config.config_options.Type(str, default="cli.md")
     heading = mkdocs.config.config_options.Type(str, default="CLI Reference")
+    order = mkdocs.config.config_options.ListOfItems(mkdocs.config.config_options.Type(str), default=[])
     styles = mkdocs.config.config_options.SubConfig(RichArgparseStyles)
 
 
 class RichArgparsePlugin(mkdocs.plugins.BasePlugin[RichArgparsePluginConfig]):
     """MkDocs plugin to generate documentation for a rich argparse parser."""
 
+    def on_config(self, config: MkDocsConfig) -> MkDocsConfig:
+        """Validate the selected parser source."""
+        if not self.config.package:
+            msg = "package must be a non-empty installed distribution name"
+            raise MkDocRichArgparseError(msg)
+        return config
+
     def on_files(self, files: Files, /, *, config: MkDocsConfig) -> Files:
         """Add a generated cli.md file to the documentation."""
         logger.info("Generating CLI documentation...")
         self.config.styles.apply()
-        parser = _load_parser(self.config.module, self.config.factory, self.config.path)
-        docs_content = argparser_to_markdown(parser, heading=self.config.heading)
+        docs_content = _entry_points_to_markdown(self.config.package, self.config.heading, self.config.order)
         cli_md_file = File.generated(
             config=config,
             src_uri=self.config.src_uri,

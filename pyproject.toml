@@ -26,7 +26,7 @@ classifiers = [
 dependencies = [
     "mkdocs>=1.6.1",
     "rich>=14.1.0",
-    "rich-argparse>=1.7.1",
+    "rich-argparse>=1.7.2",
 ]
 description = "An MkDocs plugin to generate documentation for a rich argparse parser"
 keywords = ["argparse", "mkdocs", "mkdocs-plugin", "rich"]
@@ -85,6 +85,7 @@ ignore = [
     "D107", # Missing docstring in `__init__`
     "COM812", # Conflicts with formatter
     "SLF001", # Needed to get to argparse content
+    "CPY001", # root LICENSE is enough, no need for copyright notice in each file
 ]
 pydocstyle.convention = "google"
 
